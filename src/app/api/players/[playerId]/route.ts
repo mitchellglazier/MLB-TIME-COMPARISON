@@ -3,7 +3,7 @@ import { getPlayerDetails, getTempToken } from '../../../../../lib/apiUtils';
 
 export async function GET(
   req: Request,
-  context: { params: Record<any, any> }
+  context: { params: any }
 ) {
   try {
     const playerId = context.params.playerId;
