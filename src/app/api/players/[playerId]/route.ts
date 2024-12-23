@@ -3,10 +3,9 @@ import { getPlayerDetails, getTempToken } from '../../../../../lib/apiUtils';
 
 export async function GET(
   req: Request,
-  context: { params: { playerId: string } }
+  { params }: { params: { playerId: string } }
 ) {
   try {
-    const { params } = context;
     const playerId = params?.playerId;
 
     if (!playerId) {
@@ -24,3 +23,4 @@ export async function GET(
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
+

@@ -8,9 +8,14 @@ const Navbar: React.FC = () => {
           <Link href="/">TRUMEDIA</Link>
         </div>
         <div className="space-x-4">
-          <Link href="/about" className="text-white hover:text-gray-400">
-            Project's Github
-          </Link>
+        <Link
+  href="https://github.com/mitchellglazier/MLB-TIME-COMPARISON"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="text-white hover:text-gray-400"
+>
+  Project's Github
+</Link>
         </div>
       </div>
     </div>
