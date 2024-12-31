@@ -8,7 +8,7 @@ interface LineGraphProps {
   }>;
   onColorUpdate?: (colorMap: { [playerName: string]: string }) => void;
   onRangeSelect?: (range: { start: number; end: number } | null) => void;
-  selectedGameNumber?: any; // Optional single game highlight
+  selectedGameNumber?: any; 
 }
 
 const LineGraph: React.FC<LineGraphProps> = ({
@@ -20,7 +20,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [dimensions, setDimensions] = useState({ width: 800, height: 400 });
-  const colorMapRef = useRef<{ [playerName: string]: string }>({}); // Persistent ref for color map
+  const colorMapRef = useRef<{ [playerName: string]: string }>({});
   const range = useRef<{ start: number | null; end: number | null }>({
     start: null,
     end: null,
@@ -80,7 +80,6 @@ const LineGraph: React.FC<LineGraphProps> = ({
       newColorMap[player.playerFullName] = colorScale(index.toString()) as string;
     });
 
-    // Update color map only if it has changed
     if (JSON.stringify(colorMapRef.current) !== JSON.stringify(newColorMap)) {
       colorMapRef.current = newColorMap;
       if (onColorUpdate) {
@@ -142,7 +141,6 @@ const LineGraph: React.FC<LineGraphProps> = ({
       }
     };
 
-    // Highlight single game or range
     if (selectedGameNumber !== null) {
       clickLines[0]
         .attr('x1', xScale(selectedGameNumber))

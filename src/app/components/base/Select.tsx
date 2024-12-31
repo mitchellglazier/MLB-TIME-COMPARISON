@@ -17,7 +17,7 @@ const SingleSelect: React.FC<SingleSelectProps> = ({
 
   const handleSelectOption = (option: string) => {
     onChange(option);
-    setIsOpen(false); // Close dropdown after selection
+    setIsOpen(false);
   };
 
   return (

@@ -61,7 +61,6 @@ export const calculateOPS = (games: any[]) => {
   });
 };
 
-// Repeat similarly for the other functions:
 export const calculateOBP = (games: any[]) => {
   let totalH = 0;
   let totalBB = 0;

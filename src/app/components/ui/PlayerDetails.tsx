@@ -18,7 +18,6 @@ const PlayerDetails: React.FC<PlayerDetailsProps> = ({
     return <Loading />;
   }
 
-  // Filter data based on the selected range or single game number
   const filteredData = selectedRange
     ? (() => {
         const { start, end } = selectedRange;
@@ -34,7 +33,6 @@ const PlayerDetails: React.FC<PlayerDetailsProps> = ({
     ? data.slice(0, selectedGameNumber)
     : data;
 
-  // Compute totals and derived stats
   const computeStats = (games: any[]) => {
     const totals = games.reduce(
       (totals: any, game: any) => {

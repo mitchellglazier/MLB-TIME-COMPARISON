@@ -255,14 +255,12 @@ export default function Home() {
       </div>
 
       <div className="w-3/4 p-4 bg-gray-200">
-        {/* Stat Selector */}
         <Select
           options={stats}
           selectedOption={selectedStat}
           onChange={setSelectedStat}
         />
 
-        {/* Line Graph */}
         {graphData.length > 0 && (
           <div className="bg-white shadow-md rounded-lg p-4 mb-4 mt-4">
             <div className="flex items-center justify-between mb-2">
@@ -279,7 +277,6 @@ export default function Home() {
           </div>
         )}
 
-        {/* Selected Players */}
         {selectedPlayers.length > 0 ? (
           <div
             className={`grid gap-4 mt-4 ${
