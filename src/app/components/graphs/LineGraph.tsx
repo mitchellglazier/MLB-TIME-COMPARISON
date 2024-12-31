@@ -8,7 +8,7 @@ interface LineGraphProps {
   }>;
   onColorUpdate?: (colorMap: { [playerName: string]: string }) => void;
   onRangeSelect?: (range: { start: number; end: number } | null) => void;
-  selectedGameNumber?: any;
+  selectedGameNumber?: any; 
 }
 
 const LineGraph: React.FC<LineGraphProps> = ({
@@ -65,31 +65,19 @@ const LineGraph: React.FC<LineGraphProps> = ({
 
     const xScale = d3
       .scaleLinear()
-      .domain([
-        1,
-        d3.max(
-          selectedPlayers.flatMap((p) => p.games.map((g) => g.gameNumber))
-        ) || 1,
-      ])
+      .domain([1, d3.max(selectedPlayers.flatMap((p) => p.games.map((g) => g.gameNumber))) || 1])
       .range([0, width - margin.left - margin.right]);
 
     const yScale = d3
       .scaleLinear()
-      .domain([
-        0,
-        d3.max(
-          selectedPlayers.flatMap((p) => p.games.map((g) => g.statValue))
-        ) || 1,
-      ])
+      .domain([0, d3.max(selectedPlayers.flatMap((p) => p.games.map((g) => g.statValue))) || 1])
       .range([height - margin.top - margin.bottom, 0]);
 
     const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
 
     const newColorMap: { [playerName: string]: string } = {};
     selectedPlayers.forEach((player, index) => {
-      newColorMap[player.playerFullName] = colorScale(
-        index.toString()
-      ) as string;
+      newColorMap[player.playerFullName] = colorScale(index.toString()) as string;
     });
 
     if (JSON.stringify(colorMapRef.current) !== JSON.stringify(newColorMap)) {
@@ -132,25 +120,16 @@ const LineGraph: React.FC<LineGraphProps> = ({
       .attr('stroke-width', 1)
       .attr('stroke-dasharray', '4');
 
-    const clickLines: d3.Selection<SVGLineElement, unknown, null, undefined>[] =
-      [
-        clickLineGroup
-          .append('line')
-          .attr('stroke', 'gray')
-          .attr('stroke-width', 2),
-        clickLineGroup
-          .append('line')
-          .attr('stroke', 'gray')
-          .attr('stroke-width', 2),
-      ];
+    const clickLines: d3.Selection<SVGLineElement, unknown, null, undefined>[] = [
+      clickLineGroup.append('line').attr('stroke', 'gray').attr('stroke-width', 2),
+      clickLineGroup.append('line').attr('stroke', 'gray').attr('stroke-width', 2),
+    ];
 
     const updateRangeHighlight = () => {
       rangeHighlight.selectAll('*').remove();
 
       if (range.current.start !== null && range.current.end !== null) {
-        const [start, end] = [range.current.start, range.current.end].sort(
-          (a, b) => a - b
-        );
+        const [start, end] = [range.current.start, range.current.end].sort((a, b) => a - b);
 
         rangeHighlight
           .append('rect')
@@ -161,6 +140,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
           .attr('fill', 'rgba(200, 200, 200, 0.3)');
       }
     };
+
 
     if (selectedGameNumber !== null) {
       clickLines[0]
@@ -203,10 +183,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
           range.current.end = clickedGame;
           if (onRangeSelect) {
             const { start, end } = range.current;
-            onRangeSelect({
-              start: Math.min(start!, end!),
-              end: Math.max(start!, end!),
-            });
+            onRangeSelect({ start: Math.min(start!, end!), end: Math.max(start!, end!) });
           }
         } else {
           range.current.start = clickedGame;
@@ -234,3 +211,6 @@ const LineGraph: React.FC<LineGraphProps> = ({
 };
 
 export default LineGraph;
+
+
+

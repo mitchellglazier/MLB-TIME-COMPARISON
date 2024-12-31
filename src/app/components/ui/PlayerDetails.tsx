@@ -6,6 +6,7 @@ interface PlayerDetailsProps {
   selectedStat: string;
   selectedGameNumber: number | null;
   selectedRange: { start: number; end: number } | null;
+  onStatChange: (stat: string) => void;
 }
 
 const PlayerDetails: React.FC<PlayerDetailsProps> = ({
@@ -13,6 +14,7 @@ const PlayerDetails: React.FC<PlayerDetailsProps> = ({
   selectedStat,
   selectedGameNumber,
   selectedRange,
+  onStatChange,
 }) => {
   if (!data) {
     return <Loading />;
@@ -30,8 +32,8 @@ const PlayerDetails: React.FC<PlayerDetailsProps> = ({
         );
       })()
     : selectedGameNumber !== null
-      ? data.slice(0, selectedGameNumber)
-      : data;
+    ? data.slice(0, selectedGameNumber)
+    : data;
 
   const computeStats = (games: any[]) => {
     const totals = games.reduce(
@@ -115,7 +117,8 @@ const PlayerDetails: React.FC<PlayerDetailsProps> = ({
         {stats.map((stat) => (
           <p
             key={stat.label}
-            className={`pl-1 rounded ${
+            onClick={() => onStatChange(stat.label)} 
+            className={`pl-1 rounded cursor-pointer ${
               selectedStat === stat.label ? 'border-2 border-yellow-500' : ''
             }`}
           >
@@ -143,3 +146,4 @@ const PlayerDetails: React.FC<PlayerDetailsProps> = ({
 };
 
 export default PlayerDetails;
+

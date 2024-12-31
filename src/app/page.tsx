@@ -271,11 +271,13 @@ export default function Home() {
       </div>
 
       <div className="w-3/4 p-4 bg-gray-200">
+      {selectedPlayers.length > 0 && (
         <Select
           options={stats}
           selectedOption={selectedStat}
           onChange={setSelectedStat}
         />
+      )}
 
         {graphData.length > 0 && (
           <div className="bg-white shadow-md rounded-lg p-4 mb-4 mt-4">
@@ -292,7 +294,8 @@ export default function Home() {
             />
           </div>
         )}
-        <div className="flex justify-between mt-4">
+        {selectedPlayers.length > 0 && (
+          <div className="flex justify-between mt-4">
           <h3 className="text-lg font-bold text-gray-700 mb-4">{headerText}</h3>
           <div>
             <button
@@ -313,6 +316,7 @@ export default function Home() {
             </button>
           </div>
         </div>
+        )}
 
         {selectedPlayers.length > 0 ? (
           viewMode === 'grid' ? (
@@ -338,6 +342,7 @@ export default function Home() {
                     selectedStat={selectedStat}
                     selectedGameNumber={selectedGameNumber}
                     selectedRange={selectedRange}
+                    onStatChange={setSelectedStat}
                   />
                 </div>
               ))}
