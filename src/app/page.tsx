@@ -120,6 +120,7 @@ export default function Home() {
     setFilteredPlayers(filtered);
   }, [searchQuery, selectedTeams, players, selectedPlayers]);
 
+
   const fetchPlayerData = async (playerId: number) => {
     if (selectedPlayersData[playerId]) return;
     try {
@@ -212,6 +213,28 @@ export default function Home() {
 
   if (!players.length) return <Loading />;
 
+  const bestRanges = selectedPlayers.map((player) => {
+    const games = selectedPlayersData[player.playerId] || [];
+    let maxSum = 0;
+    let bestStartIndex = 0;
+  
+    for (let i = 0; i <= games.length - 10; i++) {
+      const sum = games.slice(i, i + 10).reduce((acc: any, game: any) => acc + (game[selectedStat] || 0), 0);
+      if (sum > maxSum) {
+        maxSum = sum;
+        bestStartIndex = i;
+      }
+    }
+  
+    return {
+      playerFullName: player.playerFullName,
+      bestRange: {
+        start: bestStartIndex + 1,
+        end: bestStartIndex + 10,
+      },
+    };
+  });
+
   const headerText = selectedRange
     ? `Statistics from Game ${selectedRange.start} to ${selectedRange.end}`
     : selectedGameNumber !== null
@@ -297,6 +320,7 @@ export default function Home() {
             </div>
             <LineGraph
               selectedPlayers={graphData}
+              bestRanges={bestRanges}
               onColorUpdate={handleColorUpdate}
               onRangeSelect={(range) => setSelectedRange(range)}
               selectedGameNumber={selectedGameNumber}

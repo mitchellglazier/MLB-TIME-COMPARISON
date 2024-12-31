@@ -6,13 +6,18 @@ interface LineGraphProps {
     playerFullName: string;
     games: Array<{ gameNumber: number; statValue: number }>;
   }>;
+  bestRanges: Array<{
+    playerFullName: string;
+    bestRange: { start: number; end: number };
+  }>;
   onColorUpdate?: (colorMap: { [playerName: string]: string }) => void;
   onRangeSelect?: (range: { start: number; end: number } | null) => void;
-  selectedGameNumber?: any; 
+  selectedGameNumber?: number | null;
 }
 
 const LineGraph: React.FC<LineGraphProps> = ({
   selectedPlayers,
+  bestRanges,
   onColorUpdate,
   onRangeSelect,
   selectedGameNumber,
@@ -94,7 +99,49 @@ const LineGraph: React.FC<LineGraphProps> = ({
 
     svg.append('g').call(d3.axisLeft(yScale));
 
+    const highlightBestRange = (
+      playerData: Array<{ gameNumber: number; statValue: number }>,
+      bestRange: { start: number; end: number },
+      playerColor: string
+    ) => {
+      const bestGames = playerData.filter(
+        (g) => g.gameNumber >= bestRange.start && g.gameNumber <= bestRange.end
+      );
+
+      const line = d3
+        .line<{ gameNumber: number; statValue: number }>()
+        .x((d) => xScale(d.gameNumber))
+        .y((d) => yScale(d.statValue))
+        .curve(d3.curveMonotoneX);
+
+      svg
+        .append('path')
+        .datum(bestGames)
+        .attr('fill', 'none')
+        .attr('stroke', playerColor)
+        .attr('stroke-width', 4)
+        .attr('stroke-opacity', 0.7)
+        .attr('d', line);
+    };
+
+    const updateRangeHighlight = () => {
+      svg.selectAll('.range-highlight').remove();
+      if (range.current.start !== null && range.current.end !== null) {
+        const [start, end] = [range.current.start, range.current.end].sort((a, b) => a - b);
+        svg
+          .append('rect')
+          .attr('class', 'range-highlight')
+          .attr('x', xScale(start))
+          .attr('width', xScale(end) - xScale(start))
+          .attr('y', 0)
+          .attr('height', height - margin.top - margin.bottom)
+          .attr('fill', 'rgba(200, 200, 200, 0.3)');
+      }
+    };
+
     selectedPlayers.forEach((player, index) => {
+      const playerColor = colorScale(index.toString());
+
       const line = d3
         .line<{ gameNumber: number; statValue: number }>()
         .x((d) => xScale(d.gameNumber))
@@ -105,53 +152,15 @@ const LineGraph: React.FC<LineGraphProps> = ({
         .append('path')
         .datum(player.games)
         .attr('fill', 'none')
-        .attr('stroke', colorScale(index.toString()))
+        .attr('stroke', playerColor)
         .attr('stroke-width', 2)
         .attr('d', line);
-    });
 
-    const hoverLineGroup = svg.append('g').style('display', 'none');
-    const clickLineGroup = svg.append('g');
-    const rangeHighlight = svg.append('g');
-
-    const hoverLine = hoverLineGroup
-      .append('line')
-      .attr('stroke', 'lightgray')
-      .attr('stroke-width', 1)
-      .attr('stroke-dasharray', '4');
-
-    const clickLines: d3.Selection<SVGLineElement, unknown, null, undefined>[] = [
-      clickLineGroup.append('line').attr('stroke', 'gray').attr('stroke-width', 2),
-      clickLineGroup.append('line').attr('stroke', 'gray').attr('stroke-width', 2),
-    ];
-
-    const updateRangeHighlight = () => {
-      rangeHighlight.selectAll('*').remove();
-
-      if (range.current.start !== null && range.current.end !== null) {
-        const [start, end] = [range.current.start, range.current.end].sort((a, b) => a - b);
-
-        rangeHighlight
-          .append('rect')
-          .attr('x', xScale(start))
-          .attr('width', xScale(end) - xScale(start))
-          .attr('y', 0)
-          .attr('height', height - margin.top - margin.bottom)
-          .attr('fill', 'rgba(200, 200, 200, 0.3)');
+      const bestRange = bestRanges.find((r) => r.playerFullName === player.playerFullName);
+      if (bestRange) {
+        highlightBestRange(player.games, bestRange.bestRange, playerColor);
       }
-    };
-
-
-    if (selectedGameNumber !== null) {
-      clickLines[0]
-        .attr('x1', xScale(selectedGameNumber))
-        .attr('x2', xScale(selectedGameNumber))
-        .attr('y1', 0)
-        .attr('y2', height - margin.top - margin.bottom)
-        .style('display', null);
-    } else {
-      clickLines[0].style('display', 'none');
-    }
+    });
 
     svg
       .append('rect')
@@ -162,46 +171,42 @@ const LineGraph: React.FC<LineGraphProps> = ({
       .on('mousemove', (event: any) => {
         const [mouseX] = d3.pointer(event);
         const hoveredGame = Math.round(xScale.invert(mouseX));
-
-        hoverLineGroup.style('display', null);
-        hoverLine
+        svg.selectAll('.hover-line').remove();
+        svg
+          .append('line')
+          .attr('class', 'hover-line')
           .attr('x1', xScale(hoveredGame))
           .attr('x2', xScale(hoveredGame))
           .attr('y1', 0)
-          .attr('y2', height - margin.top - margin.bottom);
+          .attr('y2', height - margin.top - margin.bottom)
+          .attr('stroke', 'lightgray')
+          .attr('stroke-width', 1)
+          .attr('stroke-dasharray', '4');
       })
       .on('mouseout', () => {
-        hoverLineGroup.style('display', 'none');
+        svg.selectAll('.hover-line').remove();
       })
       .on('click', (event: any) => {
         const [mouseX] = d3.pointer(event);
         const clickedGame = Math.round(xScale.invert(mouseX));
-
         if (range.current.start === null) {
           range.current.start = clickedGame;
         } else if (range.current.end === null) {
           range.current.end = clickedGame;
           if (onRangeSelect) {
             const { start, end } = range.current;
-            onRangeSelect({ start: Math.min(start!, end!), end: Math.max(start!, end!) });
+            onRangeSelect({ start: Math.min(start, end), end: Math.max(start, end) });
           }
         } else {
           range.current.start = clickedGame;
           range.current.end = null;
-          rangeHighlight.selectAll('*').remove();
           if (onRangeSelect) onRangeSelect(null);
         }
-
-        clickLines[1]
-          .attr('x1', xScale(clickedGame))
-          .attr('x2', xScale(clickedGame))
-          .attr('y1', 0)
-          .attr('y2', height - margin.top - margin.bottom)
-          .style('display', null);
-
         updateRangeHighlight();
       });
-  }, [selectedPlayers, dimensions, selectedGameNumber]);
+
+    updateRangeHighlight();
+  }, [selectedPlayers, bestRanges, dimensions, selectedGameNumber]);
 
   return (
     <div ref={containerRef} className="w-full h-[300px]">
@@ -211,6 +216,8 @@ const LineGraph: React.FC<LineGraphProps> = ({
 };
 
 export default LineGraph;
+
+
 
 
 
