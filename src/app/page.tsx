@@ -215,13 +215,60 @@ export default function Home() {
 
   const bestRanges = selectedPlayers.map((player) => {
     const games = selectedPlayersData[player.playerId] || [];
-    let maxSum = 0;
+    let maxValue = 0;
     let bestStartIndex = 0;
   
     for (let i = 0; i <= games.length - 10; i++) {
-      const sum = games.slice(i, i + 10).reduce((acc: any, game: any) => acc + (game[selectedStat] || 0), 0);
-      if (sum > maxSum) {
-        maxSum = sum;
+      const windowGames = games.slice(i, i + 10);
+  
+      // Calculate cumulative stats and derived stats for the 10-game window
+      const totals = windowGames.reduce(
+        (acc: any, game: any) => {
+          acc.PA += game.PA || 0;
+          acc.AB += game.AB || 0;
+          acc.H += game.H || 0;
+          acc.BB += game.BB || 0;
+          acc.HBP += game.HBP || 0;
+          acc.SF += game.SF || 0;
+          acc.TB += game.TB || 0;
+          return acc;
+        },
+        { PA: 0, AB: 0, H: 0, BB: 0, HBP: 0, SF: 0, TB: 0 }
+      );
+  
+      // Calculate the specific stat for the current window
+      let statValue = 0;
+      switch (selectedStat) {
+        case "AVG":
+          statValue = totals.AB > 0 ? totals.H / totals.AB : 0;
+          break;
+        case "OBP":
+          statValue = totals.PA - totals.SF > 0
+            ? (totals.H + totals.BB + totals.HBP) / (totals.PA - totals.SF)
+            : 0;
+          break;
+        case "SLG":
+          statValue = totals.AB > 0 ? totals.TB / totals.AB : 0;
+          break;
+        case "OPS":
+          const obp = totals.PA - totals.SF > 0
+            ? (totals.H + totals.BB + totals.HBP) / (totals.PA - totals.SF)
+            : 0;
+          const slg = totals.AB > 0 ? totals.TB / totals.AB : 0;
+          statValue = obp + slg;
+          break;
+        case "ISO":
+          const avg = totals.AB > 0 ? totals.H / totals.AB : 0;
+          const slgForIso = totals.AB > 0 ? totals.TB / totals.AB : 0;
+          statValue = slgForIso - avg;
+          break;
+        default:
+          statValue = windowGames.reduce((sum: any, game: any) => sum + (game[selectedStat] || 0), 0);
+          break;
+      }
+  
+      if (statValue > maxValue) {
+        maxValue = statValue;
         bestStartIndex = i;
       }
     }
@@ -234,6 +281,7 @@ export default function Home() {
       },
     };
   });
+  
 
   const headerText = selectedRange
     ? `Statistics from Game ${selectedRange.start} to ${selectedRange.end}`
