@@ -7,6 +7,7 @@ const TableComponent: React.FC<{
   selectedRange: { start: number; end: number } | null;
   selectedGameNumber: number | null;
   playerColors: { [playerName: string]: string };
+  onStatChange: (stat: string) => void; // New prop to handle stat change
 }> = ({
   players,
   playerData,
@@ -14,6 +15,7 @@ const TableComponent: React.FC<{
   selectedRange,
   selectedGameNumber,
   playerColors,
+  onStatChange,
 }) => {
   const calculateStats = (data: any[]) => {
     const totals = data.reduce(
@@ -64,8 +66,25 @@ const TableComponent: React.FC<{
     }
   };
 
+  const sortedPlayers = players
+    .map((player) => {
+      const data = playerData[player.playerId] || [];
+      const filteredData = getFilteredData(data);
+      const filteredStats = calculateStats(filteredData);
+      return {
+        player,
+        stats: filteredStats,
+      };
+    })
+    .sort((a, b) => {
+      const aValue = parseFloat(a.stats[selectedStat] || 0);
+      const bValue = parseFloat(b.stats[selectedStat] || 0);
+      return bValue - aValue; // Descending order
+    });
+
   return (
     <div>
+      {/* Table */}
       <table className="w-full bg-white shadow-md rounded-lg">
         <thead className="bg-gray-100">
           <tr>
@@ -89,9 +108,10 @@ const TableComponent: React.FC<{
             ].map((stat) => (
               <th
                 key={stat}
-                className={`px-4 py-2 text-center ${
+                onClick={() => onStatChange(stat)} // Handle stat change on click
+                className={`px-4 py-2 text-center cursor-pointer ${
                   selectedStat === stat ? 'text-blue-500 font-bold' : ''
-                }`}
+                } hover:bg-gray-200`}
               >
                 {stat}
               </th>
@@ -99,51 +119,45 @@ const TableComponent: React.FC<{
           </tr>
         </thead>
         <tbody>
-          {players.map((player) => {
-            const data = playerData[player.playerId] || [];
-            const filteredData = getFilteredData(data);
-            const filteredStats = calculateStats(filteredData);
-
-            return (
-              <tr key={player.playerId} className="border-t">
-                <td className="px-4 py-2 text-left flex items-center gap-2">
-                  <span
-                    className="w-4 h-4 rounded-full"
-                    style={{
-                      backgroundColor: playerColors[player.playerFullName],
-                    }}
-                  />
-                  {player.playerFullName}
+          {sortedPlayers.map(({ player, stats }) => (
+            <tr key={player.playerId} className="border-t">
+              <td className="px-4 py-2 text-left flex items-center gap-2">
+                <span
+                  className="w-4 h-4 rounded-full"
+                  style={{
+                    backgroundColor: playerColors[player.playerFullName],
+                  }}
+                />
+                {player.playerFullName}
+              </td>
+              {[
+                'PA',
+                'AB',
+                'H',
+                'BB',
+                'HBP',
+                'SF',
+                'TB',
+                'K',
+                'RBI',
+                'HR',
+                'AVG',
+                'OPS',
+                'OBP',
+                'SLG',
+                'ISO',
+              ].map((stat) => (
+                <td
+                  key={stat}
+                  className={`px-4 py-2 text-center ${
+                    selectedStat === stat ? 'bg-blue-100 font-bold' : ''
+                  }`}
+                >
+                  {stats[stat]}
                 </td>
-                {[
-                  'PA',
-                  'AB',
-                  'H',
-                  'BB',
-                  'HBP',
-                  'SF',
-                  'TB',
-                  'K',
-                  'RBI',
-                  'HR',
-                  'AVG',
-                  'OPS',
-                  'OBP',
-                  'SLG',
-                  'ISO',
-                ].map((stat) => (
-                  <td
-                    key={stat}
-                    className={`px-4 py-2 text-center ${
-                      selectedStat === stat ? 'bg-blue-100 font-bold' : ''
-                    }`}
-                  >
-                    {filteredStats[stat]}
-                  </td>
-                ))}
-              </tr>
-            );
-          })}
+              ))}
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>
@@ -151,4 +165,6 @@ const TableComponent: React.FC<{
 };
 
 export default TableComponent;
+
+
 

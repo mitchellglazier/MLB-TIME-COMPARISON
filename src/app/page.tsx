@@ -345,11 +345,12 @@ export default function Home() {
           ) : (
             <Table
             players={selectedPlayers}
-            playerData={selectedPlayersData}
-            selectedStat={selectedStat}
-            selectedRange={selectedRange}
-            selectedGameNumber={selectedGameNumber}
-            playerColors={playerColors}
+  playerData={selectedPlayersData}
+  selectedStat={selectedStat}
+  selectedRange={selectedRange}
+  selectedGameNumber={selectedGameNumber}
+  playerColors={playerColors}
+  onStatChange={setSelectedStat}
             />
           )
         ) : (
