@@ -18,6 +18,7 @@ import {
   calculateKPercentage,
 } from '../app/utils/stats';
 import Select from './components/base/Select';
+import Table from './components/base/Table';
 
 export default function Home() {
   const [players, setPlayers] = useState<Player[]>([]);
@@ -32,8 +33,14 @@ export default function Home() {
   const [playerColors, setPlayerColors] = useState<{
     [playerName: string]: string;
   }>({});
-  const [selectedGameNumber, setSelectedGameNumber] = useState<number | null>(null);
-  const [selectedRange, setSelectedRange] = useState<{ start: number; end: number } | null>(null);
+  const [selectedGameNumber, setSelectedGameNumber] = useState<number | null>(
+    null
+  );
+  const [selectedRange, setSelectedRange] = useState<{
+    start: number;
+    end: number;
+  } | null>(null);
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
   const stats = [
     'PA',
@@ -134,7 +141,10 @@ export default function Home() {
     if (end === undefined) {
       setSelectedRange({ start, end: start });
     } else {
-      setSelectedRange({ start: Math.min(start, end), end: Math.max(start, end) }); 
+      setSelectedRange({
+        start: Math.min(start, end),
+        end: Math.max(start, end),
+      });
     }
   };
 
@@ -192,6 +202,12 @@ export default function Home() {
   };
 
   if (!players.length) return <Loading />;
+
+  const headerText = selectedRange
+    ? `Statistics from Game ${selectedRange.start} to ${selectedRange.end}`
+    : selectedGameNumber !== null
+      ? `Statistics Through Game ${selectedGameNumber}`
+      : 'Season Statistics';
 
   return (
     <div className="flex" style={{ height: 'calc(100vh - 63px)' }}>
@@ -276,34 +292,66 @@ export default function Home() {
             />
           </div>
         )}
+        <div className='flex justify-between mt-4'>
+        <h3 className="text-lg font-bold text-gray-700 mb-4">{headerText}</h3>
+        <div>
+          <button
+            className={`p-2 text-sm font-bold rounded-md ${
+              viewMode === 'grid' ? 'bg-blue-500 text-white' : 'bg-gray-300'
+            }`}
+            onClick={() => setViewMode('grid')}
+          >
+            Grid
+          </button>
+          <button
+            className={`p-2 text-sm font-bold rounded-md ml-2 ${
+              viewMode === 'list' ? 'bg-blue-500 text-white' : 'bg-gray-300'
+            }`}
+            onClick={() => setViewMode('list')}
+          >
+            List
+          </button>
+        </div>
+        </div>
 
         {selectedPlayers.length > 0 ? (
-          <div
-            className={`grid gap-4 mt-4 ${
-              selectedPlayers.length === 1
-                ? 'grid-cols-1'
-                : selectedPlayers.length === 2
-                  ? 'grid-cols-2'
-                  : 'grid-cols-3'
-            }`}
-          >
-            {selectedPlayers.map((player) => (
-              <div key={player.playerId}>
-                <PlayerCard
-                  player={player}
-                  showRemove
-                  onRemove={() => togglePlayerSelection(player)}
-                  borderColor={playerColors[player.playerFullName]}
-                />
-                <PlayerDetails
-                  data={selectedPlayersData[player.playerId]}
-                  selectedStat={selectedStat}
-                  selectedGameNumber={selectedGameNumber}
-                  selectedRange={selectedRange}
-                />
-              </div>
-            ))}
-          </div>
+          viewMode === 'grid' ? (
+            <div
+              className={`grid gap-4 ${
+                selectedPlayers.length === 1
+                  ? 'grid-cols-1'
+                  : selectedPlayers.length === 2
+                    ? 'grid-cols-2'
+                    : 'grid-cols-3'
+              }`}
+            >
+              {selectedPlayers.map((player) => (
+                <div key={player.playerId}>
+                  <PlayerCard
+                    player={player}
+                    showRemove
+                    onRemove={() => togglePlayerSelection(player)}
+                    borderColor={playerColors[player.playerFullName]}
+                  />
+                  <PlayerDetails
+                    data={selectedPlayersData[player.playerId]}
+                    selectedStat={selectedStat}
+                    selectedGameNumber={selectedGameNumber}
+                    selectedRange={selectedRange}
+                  />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <Table
+            players={selectedPlayers}
+            playerData={selectedPlayersData}
+            selectedStat={selectedStat}
+            selectedRange={selectedRange}
+            selectedGameNumber={selectedGameNumber}
+            playerColors={playerColors}
+            />
+          )
         ) : (
           <div
             className="flex items-center justify-center"
@@ -318,4 +366,3 @@ export default function Home() {
     </div>
   );
 }
-

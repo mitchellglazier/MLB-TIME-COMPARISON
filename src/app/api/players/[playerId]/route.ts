@@ -1,10 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getPlayerDetails, getTempToken } from '../../../../../lib/apiUtils';
 
-export async function GET(
-  req: Request,
-  context: { params: any }
-) {
+export async function GET(req: Request, context: { params: any }) {
   try {
     const playerId = context.params.playerId;
 
@@ -23,5 +20,3 @@ export async function GET(
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
-
-

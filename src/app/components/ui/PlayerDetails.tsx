@@ -30,8 +30,8 @@ const PlayerDetails: React.FC<PlayerDetailsProps> = ({
         );
       })()
     : selectedGameNumber !== null
-    ? data.slice(0, selectedGameNumber)
-    : data;
+      ? data.slice(0, selectedGameNumber)
+      : data;
 
   const computeStats = (games: any[]) => {
     const totals = games.reduce(
@@ -79,11 +79,13 @@ const PlayerDetails: React.FC<PlayerDetailsProps> = ({
           ? formatStat(
               parseFloat(
                 ((totals.H + totals.BB + totals.HBP) / totals.PA).toFixed(3)
-              ) + totals.TB / totals.AB
+              ) +
+                totals.TB / totals.AB
             )
           : '.000',
-          ISO: totals.AB > 0 ? formatStat((totals.TB - totals.H) / totals.AB) : '.000',
-        };
+      ISO:
+        totals.AB > 0 ? formatStat((totals.TB - totals.H) / totals.AB) : '.000',
+    };
   };
 
   const filteredStats = computeStats(filteredData);
@@ -109,16 +111,6 @@ const PlayerDetails: React.FC<PlayerDetailsProps> = ({
 
   return (
     <div className="bg-white shadow-md rounded-lg p-4 mt-4">
-      <h3 className="text-lg font-bold mb-2">
-        {selectedRange
-          ? (() => {
-              const { start, end } = selectedRange;
-              const validRange =
-                start > end ? { start: end, end: start } : selectedRange;
-              return `Statistics From Game ${validRange.start} to ${validRange.end} (Season)`;
-            })()
-          : 'Season Statistics'}
-      </h3>
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm text-gray-700">
         {stats.map((stat) => (
           <p
@@ -141,11 +133,8 @@ const PlayerDetails: React.FC<PlayerDetailsProps> = ({
               {stat.value}
             </span>{' '}
             {selectedRange && (
-        <span className="text-gray-500">
-          {' '}
-          ({stat.seasonValue})
-        </span>
-      )}
+              <span className="text-gray-500"> ({stat.seasonValue})</span>
+            )}
           </p>
         ))}
       </div>
@@ -154,5 +143,3 @@ const PlayerDetails: React.FC<PlayerDetailsProps> = ({
 };
 
 export default PlayerDetails;
-
-
