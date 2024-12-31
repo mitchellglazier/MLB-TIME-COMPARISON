@@ -292,26 +292,26 @@ export default function Home() {
             />
           </div>
         )}
-        <div className='flex justify-between mt-4'>
-        <h3 className="text-lg font-bold text-gray-700 mb-4">{headerText}</h3>
-        <div>
-          <button
-            className={`p-2 text-sm font-bold rounded-md ${
-              viewMode === 'grid' ? 'bg-blue-500 text-white' : 'bg-gray-300'
-            }`}
-            onClick={() => setViewMode('grid')}
-          >
-            Grid
-          </button>
-          <button
-            className={`p-2 text-sm font-bold rounded-md ml-2 ${
-              viewMode === 'list' ? 'bg-blue-500 text-white' : 'bg-gray-300'
-            }`}
-            onClick={() => setViewMode('list')}
-          >
-            List
-          </button>
-        </div>
+        <div className="flex justify-between mt-4">
+          <h3 className="text-lg font-bold text-gray-700 mb-4">{headerText}</h3>
+          <div>
+            <button
+              className={`p-2 text-sm font-bold rounded-md ${
+                viewMode === 'grid' ? 'bg-blue-500 text-white' : 'bg-gray-300'
+              }`}
+              onClick={() => setViewMode('grid')}
+            >
+              Grid
+            </button>
+            <button
+              className={`p-2 text-sm font-bold rounded-md ml-2 ${
+                viewMode === 'list' ? 'bg-blue-500 text-white' : 'bg-gray-300'
+              }`}
+              onClick={() => setViewMode('list')}
+            >
+              List
+            </button>
+          </div>
         </div>
 
         {selectedPlayers.length > 0 ? (
@@ -344,13 +344,13 @@ export default function Home() {
             </div>
           ) : (
             <Table
-            players={selectedPlayers}
-  playerData={selectedPlayersData}
-  selectedStat={selectedStat}
-  selectedRange={selectedRange}
-  selectedGameNumber={selectedGameNumber}
-  playerColors={playerColors}
-  onStatChange={setSelectedStat}
+              players={selectedPlayers}
+              playerData={selectedPlayersData}
+              selectedStat={selectedStat}
+              selectedRange={selectedRange}
+              selectedGameNumber={selectedGameNumber}
+              playerColors={playerColors}
+              onStatChange={setSelectedStat}
             />
           )
         ) : (

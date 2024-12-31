@@ -1,13 +1,13 @@
 import React from 'react';
 
-const TableComponent: React.FC<{
+const Table: React.FC<{
   players: any[];
   playerData: any;
   selectedStat: string;
   selectedRange: { start: number; end: number } | null;
   selectedGameNumber: number | null;
   playerColors: { [playerName: string]: string };
-  onStatChange: (stat: string) => void; // New prop to handle stat change
+  onStatChange: (stat: string) => void;
 }> = ({
   players,
   playerData,
@@ -79,12 +79,11 @@ const TableComponent: React.FC<{
     .sort((a, b) => {
       const aValue = parseFloat(a.stats[selectedStat] || 0);
       const bValue = parseFloat(b.stats[selectedStat] || 0);
-      return bValue - aValue; // Descending order
+      return bValue - aValue;
     });
 
   return (
     <div>
-      {/* Table */}
       <table className="w-full bg-white shadow-md rounded-lg">
         <thead className="bg-gray-100">
           <tr>
@@ -108,7 +107,7 @@ const TableComponent: React.FC<{
             ].map((stat) => (
               <th
                 key={stat}
-                onClick={() => onStatChange(stat)} // Handle stat change on click
+                onClick={() => onStatChange(stat)}
                 className={`px-4 py-2 text-center cursor-pointer ${
                   selectedStat === stat ? 'text-blue-500 font-bold' : ''
                 } hover:bg-gray-200`}
@@ -164,7 +163,4 @@ const TableComponent: React.FC<{
   );
 };
 
-export default TableComponent;
-
-
-
+export default Table;
