@@ -104,12 +104,21 @@ export default function Home() {
         selectedTeams.length > 0
           ? selectedTeams.includes(player.teamImage)
           : true;
-
+  
       return matchesSearchQuery && matchesTeams;
     });
-
+  
+    filtered.sort((a, b) => {
+      const isSelectedA = selectedPlayers.some((p) => p.playerId === a.playerId);
+      const isSelectedB = selectedPlayers.some((p) => p.playerId === b.playerId);
+  
+      if (isSelectedA && !isSelectedB) return -1;
+      if (!isSelectedA && isSelectedB) return 1;
+      return 0;
+    });
+  
     setFilteredPlayers(filtered);
-  }, [searchQuery, selectedTeams, players]);
+  }, [searchQuery, selectedTeams, players, selectedPlayers]);
 
   const fetchPlayerData = async (playerId: number) => {
     if (selectedPlayersData[playerId]) return;
