@@ -19,6 +19,8 @@ import {
 } from '../app/utils/stats';
 import Select from './components/base/Select';
 import Table from './components/base/Table';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTh, faList } from '@fortawesome/free-solid-svg-icons';
 
 export default function Home() {
   const [players, setPlayers] = useState<Player[]>([]);
@@ -380,20 +382,20 @@ export default function Home() {
           <h3 className="text-lg font-bold text-gray-700 mb-4">{headerText}</h3>
           <div>
             <button
-              className={`p-2 text-sm font-bold rounded-md ${
+              className={`pl-2 pr-2 pt-1 pb-1 rounded-md ${
                 viewMode === 'grid' ? 'bg-blue-500 text-white' : 'bg-gray-300'
               }`}
               onClick={() => setViewMode('grid')}
             >
-              Grid
+              <FontAwesomeIcon icon={faTh} />
             </button>
             <button
-              className={`p-2 text-sm font-bold rounded-md ml-2 ${
+              className={`pl-2 pr-2 pt-1 pb-1 rounded-md ml-2 ${
                 viewMode === 'list' ? 'bg-blue-500 text-white' : 'bg-gray-300'
               }`}
               onClick={() => setViewMode('list')}
             >
-              List
+              <FontAwesomeIcon icon={faList} />
             </button>
           </div>
         </div>
