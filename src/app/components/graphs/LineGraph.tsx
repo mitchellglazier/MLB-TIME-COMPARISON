@@ -11,7 +11,6 @@ interface LineGraphProps {
     bestRange: { start: number; end: number };
   }>;
   average: number;
-  selectedStat: string;
   onColorUpdate?: (colorMap: { [playerName: string]: string }) => void;
   onRangeSelect?: (range: { start: number; end: number } | null) => void;
   selectedGameNumber?: number | null;
@@ -21,7 +20,6 @@ const LineGraph: React.FC<LineGraphProps> = ({
   selectedPlayers,
   bestRanges,
   average,
-  selectedStat,
   onColorUpdate,
   onRangeSelect,
   selectedGameNumber,

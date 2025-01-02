@@ -359,7 +359,6 @@ export default function Home() {
               onColorUpdate={handleColorUpdate}
               onRangeSelect={(range) => setSelectedRange(range)}
               selectedGameNumber={selectedGameNumber}
-              selectedStat={selectedStat}
               average={
                 averages.cumulative[selectedStat] || averages.derived[selectedStat]
               }
