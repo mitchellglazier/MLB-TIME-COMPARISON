@@ -10,6 +10,8 @@ interface LineGraphProps {
     playerFullName: string;
     bestRange: { start: number; end: number };
   }>;
+  average: number;
+  selectedStat: string;
   onColorUpdate?: (colorMap: { [playerName: string]: string }) => void;
   onRangeSelect?: (range: { start: number; end: number } | null) => void;
   selectedGameNumber?: number | null;
@@ -18,6 +20,8 @@ interface LineGraphProps {
 const LineGraph: React.FC<LineGraphProps> = ({
   selectedPlayers,
   bestRanges,
+  average,
+  selectedStat,
   onColorUpdate,
   onRangeSelect,
   selectedGameNumber,
@@ -162,29 +166,57 @@ const LineGraph: React.FC<LineGraphProps> = ({
       }
     });
 
+    if (average !== undefined) {
+      svg
+        .append('line')
+        .attr('x1', 0)
+        .attr('x2', width - margin.left - margin.right)
+        .attr('y1', yScale(average))
+        .attr('y2', yScale(average))
+        .attr('stroke', 'lightgray')
+        .attr('stroke-dasharray', '4')
+        .attr('stroke-width', 1);
+    }
+
+
+
     svg
-      .append('rect')
-      .attr('width', width - margin.left - margin.right)
-      .attr('height', height - margin.top - margin.bottom)
-      .attr('fill', 'none')
-      .attr('pointer-events', 'all')
-      .on('mousemove', (event: any) => {
-        const [mouseX] = d3.pointer(event);
-        const hoveredGame = Math.round(xScale.invert(mouseX));
-        svg.selectAll('.hover-line').remove();
-        svg
-          .append('line')
-          .attr('class', 'hover-line')
-          .attr('x1', xScale(hoveredGame))
-          .attr('x2', xScale(hoveredGame))
-          .attr('y1', 0)
-          .attr('y2', height - margin.top - margin.bottom)
-          .attr('stroke', 'lightgray')
-          .attr('stroke-width', 1)
-          .attr('stroke-dasharray', '4');
-      })
+  .append('rect')
+  .attr('width', width - margin.left - margin.right)
+  .attr('height', height - margin.top - margin.bottom)
+  .attr('fill', 'none')
+  .attr('pointer-events', 'all')
+  .on('mousemove', (event: any) => {
+    const [mouseX] = d3.pointer(event);
+    const hoveredGame = Math.round(xScale.invert(mouseX));
+
+    svg.selectAll('.hover-line').remove();
+    svg.selectAll('.hover-text').remove();
+
+    svg
+      .append('line')
+      .attr('class', 'hover-line')
+      .attr('x1', xScale(hoveredGame))
+      .attr('x2', xScale(hoveredGame))
+      .attr('y1', 0)
+      .attr('y2', height - margin.top - margin.bottom)
+      .attr('stroke', 'lightgray')
+      .attr('stroke-width', 1)
+      .attr('stroke-dasharray', '4');
+
+    svg
+      .append('text')
+      .attr('class', 'hover-text')
+      .attr('x', xScale(hoveredGame))
+      .attr('y', -5) 
+      .attr('text-anchor', 'middle')
+      .attr('fill', 'gray')
+      .attr('font-size', '12px')
+      .text(`Game ${hoveredGame}`);
+  })
       .on('mouseout', () => {
         svg.selectAll('.hover-line').remove();
+        svg.selectAll('.hover-text').remove();
       })
       .on('click', (event: any) => {
         const [mouseX] = d3.pointer(event);
@@ -207,6 +239,8 @@ const LineGraph: React.FC<LineGraphProps> = ({
 
     updateRangeHighlight();
   }, [selectedPlayers, bestRanges, dimensions, selectedGameNumber]);
+
+  
 
   return (
     <div ref={containerRef} className="w-full h-[300px]">

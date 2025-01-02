@@ -13,14 +13,12 @@ import {
   calculateOBP,
   calculateSLG,
   calculateISO,
-  calculateBABIP,
-  calculateBBPercentage,
-  calculateKPercentage,
 } from '../app/utils/stats';
 import Select from './components/base/Select';
 import Table from './components/base/Table';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTh, faList } from '@fortawesome/free-solid-svg-icons';
+import useAverages from './hooks/useAverages';
 
 export default function Home() {
   const [players, setPlayers] = useState<Player[]>([]);
@@ -43,6 +41,7 @@ export default function Home() {
     end: number;
   } | null>(null);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const averages: any = useAverages();
 
   const stats = [
     'PA',
@@ -149,17 +148,6 @@ export default function Home() {
     setPlayerColors(colorMap);
   };
 
-  const handleRangeUpdate = (start: number, end?: number) => {
-    if (end === undefined) {
-      setSelectedRange({ start, end: start });
-    } else {
-      setSelectedRange({
-        start: Math.min(start, end),
-        end: Math.max(start, end),
-      });
-    }
-  };
-
   const toggleTeamSelection = (teamImage: string) => {
     setSelectedTeams((prevSelected) =>
       prevSelected.includes(teamImage)
@@ -207,10 +195,7 @@ export default function Home() {
     OPS: calculateOPS,
     OBP: calculateOBP,
     SLG: calculateSLG,
-    ISO: calculateISO,
-    BABIP: calculateBABIP,
-    'BB%': calculateBBPercentage,
-    'K%': calculateKPercentage,
+    ISO: calculateISO
   };
 
   if (!players.length) return <Loading />;
@@ -223,7 +208,6 @@ export default function Home() {
     for (let i = 0; i <= games.length - 10; i++) {
       const windowGames = games.slice(i, i + 10);
   
-      // Calculate cumulative stats and derived stats for the 10-game window
       const totals = windowGames.reduce(
         (acc: any, game: any) => {
           acc.PA += game.PA || 0;
@@ -238,7 +222,6 @@ export default function Home() {
         { PA: 0, AB: 0, H: 0, BB: 0, HBP: 0, SF: 0, TB: 0 }
       );
   
-      // Calculate the specific stat for the current window
       let statValue = 0;
       switch (selectedStat) {
         case "AVG":
@@ -365,7 +348,9 @@ export default function Home() {
           <div className="bg-white shadow-md rounded-lg p-4 mb-4 mt-4">
             <div className="flex items-center justify-between mb-2">
               <h3 className="text-lg font-bold text-gray-700">
-                2023 Season {selectedStat}
+                2023 Season {selectedStat} (League Average: {
+                averages.cumulative[selectedStat] || averages.derived[selectedStat]
+              })
               </h3>
             </div>
             <LineGraph
@@ -374,6 +359,10 @@ export default function Home() {
               onColorUpdate={handleColorUpdate}
               onRangeSelect={(range) => setSelectedRange(range)}
               selectedGameNumber={selectedGameNumber}
+              selectedStat={selectedStat}
+              average={
+                averages.cumulative[selectedStat] || averages.derived[selectedStat]
+              }
             />
           </div>
         )}
