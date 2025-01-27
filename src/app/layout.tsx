@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'TruMedia - Mitchell Glazier',
-  description: 'TruMedia Networks Project - Core',
+  title: 'Mitchell Glazier - Software Engineer',
+  description: 'Mitchell Glazier - Software Engineer',
 };
 
 export default function RootLayout({

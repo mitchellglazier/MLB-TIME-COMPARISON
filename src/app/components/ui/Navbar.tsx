@@ -5,7 +5,7 @@ const Navbar: React.FC = () => {
     <div className="bg-[#295a8e] p-4">
       <div className="container mx-auto flex justify-between items-center">
         <div className="text-white text-lg font-bold">
-          <Link href="/">TRUMEDIA</Link>
+          <Link href="/">Qualified Hitters 2024</Link>
         </div>
         <div className="space-x-4">
           <Link
