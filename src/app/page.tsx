@@ -320,7 +320,7 @@ export default function Home() {
               }`}
             >
               <img
-                src={teamImage}
+                src={teamImage || "/players/mlb.png"}
                 alt="Team Logo"
                 className="w-6 h-6 object-contain"
               />
