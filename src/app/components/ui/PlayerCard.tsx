@@ -50,7 +50,7 @@ const PlayerCard: React.FC<PlayerCardProps> = ({
         </button>
       )}
       <Image
-        src={player.playerImage}
+        src={player.playerImage || "/players/mlb.png"}
         alt={`${player.playerFullName}'s Image`}
         width={50}
         height={50}
