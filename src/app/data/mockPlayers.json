@@ -1,0 +1,62 @@
+[
+  {
+    "playerId": 1,
+    "playerFullName": "Mike Trout",
+    "teamImage": "/teams/angels.png",
+    "playerImage": "/players/mike_trout.png"
+  },
+  {
+    "playerId": 2,
+    "playerFullName": "Mookie Betts",
+    "teamImage": "/teams/dodgers.png",
+    "playerImage": "/players/mookie_betts.png"
+  },
+  {
+    "playerId": 3,
+    "playerFullName": "Shohei Ohtani",
+    "teamImage": "/teams/dodgers.png",
+    "playerImage": "/players/ohtani.png"
+  },
+  {
+    "playerId": 4,
+    "playerFullName": "Aaron Judge",
+    "teamImage": "/teams/yankees.png",
+    "playerImage": "/players/aaron_judge.png"
+  },
+  {
+    "playerId": 5,
+    "playerFullName": "Zach Neto",
+    "teamImage": "/teams/angels.png",
+    "playerImage": "/players/neto.png"
+  },
+  {
+    "playerId": 6,
+    "playerFullName": "Logan O'Hoppe",
+    "teamImage": "/teams/angels.png",
+    "playerImage": "/players/ohoppe.png"
+  },
+  {
+    "playerId": 7,
+    "playerFullName": "Freddie Freeman",
+    "teamImage": "/teams/dodgers.png",
+    "playerImage": "/players/freeman.png"
+  },
+  {
+    "playerId": 8,
+    "playerFullName": "Jazz Chisholm Jr",
+    "teamImage": "/teams/yankees.png",
+    "playerImage": "/players/chisholm.png"
+  },
+  {
+    "playerId": 9,
+    "playerFullName": "Cody Bellinger",
+    "teamImage": "/teams/yankees.png",
+    "playerImage": "/players/bellinger.png"
+  },
+  {
+    "playerId": 10,
+    "playerFullName": "Wyatt Langford",
+    "teamImage": "/teams/rangers.png",
+    "playerImage": "/players/langford.png"
+  }
+]

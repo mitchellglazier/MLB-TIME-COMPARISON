@@ -20,6 +20,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTh, faList } from '@fortawesome/free-solid-svg-icons';
 import useAverages from './hooks/useAverages';
 
+// hard coded data (use while token is not operational)
+import mockPlayers from './data/mockPlayers.json';
+import mockPlayerStats from './data/mockPlayerStats.json';
+
+
 export default function Home() {
   const [players, setPlayers] = useState<Player[]>([]);
   const [filteredPlayers, setFilteredPlayers] = useState<Player[]>([]);
@@ -65,23 +70,29 @@ export default function Home() {
   ];
 
   useEffect(() => {
-    const fetchPlayers = async () => {
-      try {
-        const response = await fetch('/api/players');
-        const data = await response.json();
-        if (response.ok) {
-          setPlayers(data);
-          setFilteredPlayers(data);
-        } else {
-          setError(data.error || 'Failed to fetch players.');
-        }
-      } catch (err: any) {
-        setError(err.message);
-      }
-    };
+  setPlayers(mockPlayers);
+  setFilteredPlayers(mockPlayers);
+}, []);
 
-    fetchPlayers();
-  }, []);
+
+  // useEffect(() => {
+  //   const fetchPlayers = async () => {
+  //     try {
+  //       const response = await fetch('/api/players');
+  //       const data = await response.json();
+  //       if (response.ok) {
+  //         setPlayers(data);
+  //         setFilteredPlayers(data);
+  //       } else {
+  //         setError(data.error || 'Failed to fetch players.');
+  //       }
+  //     } catch (err: any) {
+  //       setError(err.message);
+  //     }
+  //   };
+
+  //   fetchPlayers();
+  // }, []);
 
   useEffect(() => {
     const updatedGraphData = Object.entries(selectedPlayersData).map(
@@ -121,24 +132,37 @@ export default function Home() {
     setFilteredPlayers(filtered);
   }, [searchQuery, selectedTeams, players, selectedPlayers]);
 
-
   const fetchPlayerData = async (playerId: number) => {
-    if (selectedPlayersData[playerId]) return;
-    try {
-      const response = await fetch(`/api/players/${playerId}`);
-      const data = await response.json();
-      if (response.ok) {
-        setSelectedPlayersData((prev: any) => ({
-          ...prev,
-          [playerId]: data,
-        }));
-      } else {
-        setError(data.error || 'Failed to fetch player data.');
-      }
-    } catch (err: any) {
-      setError(err.message);
-    }
-  };
+  if (selectedPlayersData[playerId]) return;
+
+  const data = mockPlayerStats[playerId];
+  if (data) {
+    setSelectedPlayersData((prev: any) => ({
+      ...prev,
+      [playerId]: data,
+    }));
+  } else {
+    setError('Player data not found.');
+  }
+};
+
+  // const fetchPlayerData = async (playerId: number) => {
+  //   if (selectedPlayersData[playerId]) return;
+  //   try {
+  //     const response = await fetch(`/api/players/${playerId}`);
+  //     const data = await response.json();
+  //     if (response.ok) {
+  //       setSelectedPlayersData((prev: any) => ({
+  //         ...prev,
+  //         [playerId]: data,
+  //       }));
+  //     } else {
+  //       setError(data.error || 'Failed to fetch player data.');
+  //     }
+  //   } catch (err: any) {
+  //     setError(err.message);
+  //   }
+  // };
 
   const uniqueTeamImages = Array.from(
     new Set(players.map((player) => player.teamImage))
