@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Player } from './types/Player';
+import { Game } from './types/Game';
 import PlayerCard from './components/ui/PlayerCard';
 import PlayerDetails from './components/ui/PlayerDetails';
 import Loading from './components/base/Loading';
@@ -22,7 +23,7 @@ import useAverages from './hooks/useAverages';
 
 // hard coded data (use while token is not operational)
 import mockPlayers from './data/mockPlayers.json';
-import mockPlayerStats from './data/mockPlayerStats.json';
+import rawPlayerStats from './data/mockPlayerStats.json';
 
 
 export default function Home() {
@@ -31,7 +32,7 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedTeams, setSelectedTeams] = useState<string[]>([]);
   const [selectedPlayers, setSelectedPlayers] = useState<Player[]>([]);
-  const [selectedPlayersData, setSelectedPlayersData] = useState<any>({});
+  const [selectedPlayersData, setSelectedPlayersData] = useState<Record<string, Game[]>>({});
   const [graphData, setGraphData] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [selectedStat, setSelectedStat] = useState<string>('HR');
@@ -47,7 +48,7 @@ export default function Home() {
   } | null>(null);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const averages: any = useAverages();
-
+  const mockPlayerStats: Record<string, Game[]> = rawPlayerStats;
   const stats = [
     'PA',
     'AB',
@@ -97,7 +98,7 @@ export default function Home() {
   useEffect(() => {
     const updatedGraphData = Object.entries(selectedPlayersData).map(
       ([playerId, games]: any) => {
-        const player = players.find((p) => p.playerId === parseInt(playerId));
+        const player = players.find((p) => p.playerId === playerId);
         return {
           playerFullName: player?.playerFullName || 'Unknown Player',
           games: statCalculators[selectedStat](games),
@@ -132,7 +133,7 @@ export default function Home() {
     setFilteredPlayers(filtered);
   }, [searchQuery, selectedTeams, players, selectedPlayers]);
 
-  const fetchPlayerData = async (playerId: number) => {
+  const fetchPlayerData = async (playerId: string) => {
   if (selectedPlayersData[playerId]) return;
 
   const data = mockPlayerStats[playerId];
