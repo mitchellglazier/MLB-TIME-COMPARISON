@@ -1,6 +1,6 @@
 export interface Player {
   playerFullName: string;
-  // playerId: number;
+  // playerId: number; removed till api is up again
   playerId: string;
   playerImage: string;
   teamImage: string;
